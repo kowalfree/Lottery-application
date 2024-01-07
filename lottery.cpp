@@ -1,56 +1,51 @@
 #include <iostream>
 #include <random>
 #include <vector>
+#include <string>
+#include <regex>
 
 using namespace std;
 
 int num [6];
-int *randomArray = new int[49]; //array reservation
-char play = {'Y'}; // variable for "Yes or Not?"
+int *randomArray = new int[49]; //dynamic array reservation
 
 // WRITE MY OWN NUMBERS
-
 void myNumbers () 
-{
+{   
+    string stringsArray [6];
     cout<<"\nWrite your 6 numbers from 1 to 49. The numbers cannot be repeated."<< endl;
-    int i;
 
-    for (i = 0; i<6; i++) 
-    {
-        cin >> num[i]; 
-        // Condition for check range
-        if (num[i] < 1 || num[i] > 49) 
-        { 
-            cout<<"Number " << num[i] << " is not in the range 1 to 49. Try entering a different number."<< endl;
-            cin >> num[i]; 
-        } 
-        // Loop for check repeated numbers
-        for (int j = 0; j<6; j++) 
+    for (int i = 0; i<6; i++) 
+    { 
+        bool result;
+        regex isInteger("\\D");// \D: matches any non-digit characters
+
+        // check if a string is a integer
+        while (true)
         {
-            if (j != i) 
+            cin >> stringsArray[i];
+            result = regex_search(stringsArray[i], isInteger);
+
+            if(result)
+            {   
+                 cout << "Input value " << stringsArray[i]<< " is not correct. Try again."<<endl;
+            }
+            else
+            {  
+                num[i] = stoi(stringsArray[i]); 
+                break;     
+            }
+        }    
+        // check repeated integers
+        for (int j = 0; j<i; j++) 
+        {
+            while (num[j] == num[i]) 
             {
-                if (num[j] == num[i]) 
-                {
-                    cout<<"Number " << num[j] << " is repeated. Try entering a different number."<< endl;
-                    cin >> num[j]; 
-                }     
+                cout<<"Number " << num[i] << " is repeated. Try entering a different number."<< endl;
+                cin >> num[i]; 
             }              
         }      
     }
-
-    // void repeat () 
-// {
-//     for (int i=0; i < 49; i++) 
-//     {   
-//         for (int j=0; j < 49; j++) 
-//         {  
-//             if (randomArray[i] == randomArray[j] && i!=j) 
-//             {
-//                 cout<<"repeat numbers: "<<randomArray[i]<<" ";
-//             }
-//         }
-// 	}
-// }
 
     cout<<"\nYou entered the following numbers: ";
      // Loop for print our numbers
@@ -61,7 +56,6 @@ void myNumbers ()
 }
 
 // RANDOM NUMBERS GENERATOR
-
 void numbersGenerator () 
 {
     random_device rd; // class is used to obtain a seed value for the random number generator
@@ -146,6 +140,7 @@ void points ()
 // FUNCTION FOR PLAY MORE OR QUIT GAME
 int tryAgain () 
 {
+    char play = {'Y'}; // variable for "Yes or Not?"
     cin>> play;
 
     if (play == 'Y' || play == 'y') 
