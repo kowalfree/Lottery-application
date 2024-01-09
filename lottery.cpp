@@ -3,54 +3,71 @@
 #include <vector>
 #include <string>
 #include <regex>
+#include <conio.h>
 
 using namespace std;
 
 int num [6];
 int *randomArray = new int[49]; //dynamic array reservation
+int i;
 
-// WRITE MY OWN NUMBERS
+
+// CHECK IF A STRING IS INTEGER
+void checkInteger ()
+{
+    string stringsArray [6];
+ 
+    while (true)
+    {
+        cin >> stringsArray[i];
+        regex isInteger("\\D");// \D: matches any non-digit characters
+        bool result;
+        result = regex_search(stringsArray[i], isInteger);
+        
+
+        if(result)
+        {   
+            cout << "Input value " << stringsArray[i]<< " is not correct. Try again."<<endl;
+        }
+        else
+        {   
+            num[i] = stoi(stringsArray[i]); 
+
+            if (num[i] < 1 ||  num[i] > 49) 
+            {
+                cout << "Input value " << stringsArray[i]<< " is not correct. Try again.."<<endl;
+            } 
+            else 
+            {
+            break; 
+            }    
+        }
+    } 
+}
+
+// CHECK REPEATED INTEGERS
 void myNumbers () 
 {   
-    string stringsArray [6];
-    cout<<"\nWrite your 6 numbers from 1 to 49. The numbers cannot be repeated."<< endl;
+    cout<<"\n\nWrite your 6 numbers from 1 to 49. The numbers cannot be repeated."<< endl;
 
-    for (int i = 0; i<6; i++) 
+    for (i = 0; i<6; i++) 
     { 
-        bool result;
-        regex isInteger("\\D");// \D: matches any non-digit characters
-
-        // check if a string is a integer
-        while (true)
-        {
-            cin >> stringsArray[i];
-            result = regex_search(stringsArray[i], isInteger);
-
-            if(result)
-            {   
-                 cout << "Input value " << stringsArray[i]<< " is not correct. Try again."<<endl;
-            }
-            else
-            {  
-                num[i] = stoi(stringsArray[i]); 
-                break;     
-            }
-        }    
-        // check repeated integers
+       checkInteger ();
+       
         for (int j = 0; j<i; j++) 
         {
             while (num[j] == num[i]) 
             {
                 cout<<"Number " << num[i] << " is repeated. Try entering a different number."<< endl;
-                cin >> num[i]; 
+                checkInteger ();
             }              
-        }      
+        }        
+        
     }
-
     cout<<"\nYou entered the following numbers: ";
      // Loop for print our numbers
-    for (int k = 0; k < 6; k++) {
-            
+    for (int k = 0; k < 6; k++) 
+    {
         cout<< num[k] <<" ";
     }
 }
@@ -132,17 +149,15 @@ void points ()
         {
             cout << sameNumbers.at(k)<<" ";
         };
-
-        cout<< ". Do you wanna try again? [Y/N]  ";
+        cout << ". Do you wanna try again? [Y/N]  " << endl; 
     }
 }
 
 // FUNCTION FOR PLAY MORE OR QUIT GAME
 int tryAgain () 
 {
-    char play = {'Y'}; // variable for "Yes or Not?"
-    cin>> play;
-
+    char play = getch(); // variable for "Yes or Not?"
+   
     if (play == 'Y' || play == 'y') 
     {
         myNumbers ();
