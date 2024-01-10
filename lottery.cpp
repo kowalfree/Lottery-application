@@ -9,7 +9,7 @@ using namespace std;
 
 int num [6];
 int *randomArray = new int[49]; //dynamic array reservation
-int i;
+int i; //variable for functions checkInteger () and myNumbers ()
 
 
 // CHECK IF A STRING IS INTEGER
@@ -20,26 +20,24 @@ void checkInteger ()
     while (true)
     {
         cin >> stringsArray[i];
-        regex isInteger("\\D");// \D: matches any non-digit characters
-        bool result;
-        result = regex_search(stringsArray[i], isInteger);
-        
-
+        regex isInteger("\\D"); // \\D: matches any non-digit characters
+        bool result = regex_search(stringsArray[i], isInteger);
+    
         if(result)
         {   
-            cout << "Input value " << stringsArray[i]<< " is not correct. Try again."<<endl;
+            cout << "Input value " << stringsArray[i] << " is not correct. Try again." << endl;
         }
         else
         {   
             num[i] = stoi(stringsArray[i]); 
 
-            if (num[i] < 1 ||  num[i] > 49) 
+            if (num[i] < 1 ||  num[i] > 49) // condition for check range od numbers
             {
-                cout << "Input value " << stringsArray[i]<< " is not correct. Try again.."<<endl;
+                cout << "Input value " << stringsArray[i] << " is not correct. Try again." << endl;
             } 
             else 
             {
-            break; 
+                break; 
             }    
         }
     } 
@@ -48,27 +46,29 @@ void checkInteger ()
 // CHECK REPEATED INTEGERS
 void myNumbers () 
 {   
-    cout<<"\n\nWrite your 6 numbers from 1 to 49. The numbers cannot be repeated."<< endl;
+    cout << "\n\n---------------------------------------------------------------------------------------------" << endl;
+    cout << "Welcome in my lottery. Today you can win 1 000 000 $. Good luck." << endl;
+    cout << "\nThe numbers must be positive integer value without plus sings like '+' and cannot be repeated.\nPlease write your 6 numbers from 1 to 49: ";
 
     for (i = 0; i<6; i++) 
     { 
        checkInteger ();
        
-        for (int j = 0; j<i; j++) 
+        for (int j = 0; j<i; j++) // check repeated numbers
         {
             while (num[j] == num[i]) 
             {
-                cout<<"Number " << num[i] << " is repeated. Try entering a different number."<< endl;
+                cout << "Number " << num[i] << " is repeated. Try entering a different number." << endl;
                 checkInteger ();
             }              
-        }        
-        
+        }         
     }
-    cout<<"\nYou entered the following numbers: ";
-     // Loop for print our numbers
-    for (int k = 0; k < 6; k++) 
+
+    cout << "\nYou entered the following numbers: ";
+    
+    for (int k = 0; k < 6; k++)  // Loop for print our numbers
     {
-        cout<< num[k] <<" ";
+        cout << num[k] << " ";
     }
 }
 
@@ -81,36 +81,35 @@ void numbersGenerator ()
     bool checkNum; // variable for help
     int howMany = {0}; // how many draws were made
    
-    // loop for randomizing numbers
-    for (int i=1; i<=6; i++) 
+    for (int i=1; i<=6; i++) // loop for randomizing numbers
     { 
-        do {
+        do 
+        {
             int number = distr(randomEngine); // function for generate random numbers
             checkNum = {true};
 
-            // loop to check for number repetitions
-            for (int j=1; j<=howMany; j++) 
+            for (int j=1; j<=howMany; j++) // loop to check for number repetitions
             { 
-                // condition checking number repetitions
                 if (number == randomArray[j-1]) 
                 { 
                     checkNum = false;
                 } 
             }
-            // a loop for entering the correct numbers into the array
-            if (checkNum == true) 
+            
+            if (checkNum == true) // condition for entering the correct numbers into the array
             { 
                 randomArray[howMany] = number;
                 howMany++; 
             }
-        } while (checkNum != true);
+        } 
+        while (checkNum != true);
     }
-    cout<<"\nLottery numbers: ";
+
+    cout << "\nLottery numbers: ";
     
-    // loop to print the entire array
-    for (int i=0; i < howMany; i++) 
+    for (int i=0; i < howMany; i++)  // loop to print the entire array
     {
-		cout<<randomArray[i]<<" ";
+		cout << randomArray[i] << " ";
 	}
 }
 
@@ -118,10 +117,9 @@ void numbersGenerator ()
 void points () 
 {   int i;
     int j;
-    vector <int> sameNumbers; // VECTOR WITH SAME NUMBERS
+    vector <int> sameNumbers; // vector with same numbers
 
-    // Loop for check and add same numbers to vector
-    for (i = 0; i<6; i++)
+    for (i = 0; i<6; i++)  // Loop for check and add same numbers to vector
     {
          for (j = 0; j<6; j++)
         {
@@ -132,23 +130,23 @@ void points ()
         }   
     }
 
-    // Condition for check amount of same numbers in vector
-    if (sameNumbers.empty() == true) // 
+    if (sameNumbers.empty() == true) // Condition for check amount of same numbers in vector 
     {
-        cout<<"\n\nI'm sorry, you didn't get any numbers. Do you wanna try again? [Y/N]  ";
+        cout << "\n\nI'm sorry, you didn't get any numbers. Do you wanna try again? [Y/N]  ";
     } 
     else if (sameNumbers.size() == 1)
     {
-        cout<<"\n\nCongratulations, you got "<< sameNumbers.size() <<" number: "<< sameNumbers.at(0)<< ". Do you wanna try again? [Y/N]  ";
+        cout << "\n\nCongratulations, you got " << sameNumbers.size() << " number: " << sameNumbers.at(0) << ". Do you wanna try again? [Y/N]  ";
     }
     else 
     {
-        cout<<"\n\nCongratulations, you got "<< sameNumbers.size() <<" numbers: "; 
+        cout << "\n\nCongratulations, you got " << sameNumbers.size() << " numbers: "; 
 
         for (size_t k = 0; k<sameNumbers.size(); k++)
         {
-            cout << sameNumbers.at(k)<<" ";
+            cout << sameNumbers.at(k) << " ";
         };
+
         cout << ". Do you wanna try again? [Y/N]  " << endl; 
     }
 }
@@ -166,14 +164,16 @@ int tryAgain ()
         tryAgain ();
     }
     else if (play == 'N' || play == 'n') 
-    {   
-       return 0;
+    {  
+        cout << "\nExiting the lottery."; 
+        return 0;
     }
     else 
     {
-        cout<<"\nWrong answer. Do you wanna try again? [Y/N] "; 
+        cout << "\nWrong answer. Do you wanna try again? [Y/N] "; 
         tryAgain ();
     }
+
     return 0;         
 }
 
