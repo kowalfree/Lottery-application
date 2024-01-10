@@ -43,7 +43,22 @@ void checkInteger ()
     } 
 }
 
-// CHECK REPEATED INTEGERS
+// CHECK REPEATED NUMBERS
+void repeatedNum () 
+{
+    checkInteger ();
+    
+    for (int j = 0; j<i; j++) // check repeated numbers
+    {
+        while (num[j] == num[i]) 
+        {
+            cout << "Number " << num[i] << " is repeated. Try entering a different number." << endl;
+            repeatedNum ();
+        }              
+    }            
+}
+
+// TITLE AND PRINT MY NUMBERS
 void myNumbers () 
 {   
     cout << "\n\n---------------------------------------------------------------------------------------------" << endl;
@@ -52,16 +67,7 @@ void myNumbers ()
 
     for (i = 0; i<6; i++) 
     { 
-       checkInteger ();
-       
-        for (int j = 0; j<i; j++) // check repeated numbers
-        {
-            while (num[j] == num[i]) 
-            {
-                cout << "Number " << num[i] << " is repeated. Try entering a different number." << endl;
-                checkInteger ();
-            }              
-        }         
+        repeatedNum ();
     }
 
     cout << "\nYou entered the following numbers: ";
@@ -178,7 +184,6 @@ int tryAgain ()
 }
 
 //MAIN FUNCTION
-
 int main () 
 {  
     myNumbers ();
