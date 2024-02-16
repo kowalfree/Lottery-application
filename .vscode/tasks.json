@@ -1,0 +1,28 @@
+{
+    "tasks": [
+        {
+            "type": "cppbuild",
+            "label": "C/C++: main.cpp kompiluj aktywny plik",
+            "command": "c:\\Users\\kowal\\Desktop\\Programowanie\\C++\\main.cpp",
+            "args": [
+                "-fdiagnostics-color=always",
+                "-g",
+                "${file}",
+                "-o",
+                "${fileDirname}\\${fileBasenameNoExtension}.exe"
+            ],
+            "options": {
+                "cwd": "c:\\Users\\kowal\\Desktop\\Programowanie\\C++"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "Zadanie wygenerowane przez debuger."
+        }
+    ],
+    "version": "2.0.0"
+}
