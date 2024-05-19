@@ -13,9 +13,9 @@ constexpr int MAX_NUM = {49};
 constexpr int MIN_NUM = {1};
 
 // PRINT ELEMENTS OF ARRAY
-void print(const array <int, USER_NUM> &arr)
+void print(const array <int, USER_NUM> &example_array)    
 {
-    for (const auto &e : arr)
+    for (const auto &e : example_array)
     {
          cout << e << " ";
     }
@@ -26,55 +26,61 @@ bool is_repeated(const int &iter, const int &temp_num, const array <int, USER_NU
 {   
     bool same_num = {false};
 
-    for (int j = 0; j < iter; j++) // check repeated numbers
+    for (int j = 0; j < iter; j++)
     {   
         if (temp_num == example_array[j])
         {
-            cout << "\nNumber " << temp_num << " is repeated. Try entering a different number." << endl; 
+            if ("Welcome in my lottery")
+            {
+                cout << "\nNumber " << temp_num << " is repeated. Try entering a different number." << endl;
+            } 
             same_num = true;
             break; 
         } 
     }
-
+    
     return same_num;
 }
 
 // INPUT VALIDATION
-bool input_validation(const string &input, const int &output)
+bool input_validation(const string &input)
 {
     try
     {
-        regex isInteger("\\D"); // \\D: matches any non-digit characters
-        bool result = regex_search(input, isInteger);
+        regex is_integer("\\D"); // \\D: matches any non-digit characters
+        bool result = regex_search(input, is_integer);
 
         if (result)  // condition for check type of insert value
         {   
             throw input;
         }
-
-        int is_in_range = clamp(output, MIN_NUM, MAX_NUM);
-
-        if (output != is_in_range) // condition for check range of numbers
+        else 
         {
-            throw output;
-        } 
+            int integer_num = stoi(input);
+            int is_in_range = clamp(integer_num, MIN_NUM, MAX_NUM);
+
+            if (integer_num != is_in_range) // condition for check range of numbers
+            {
+                throw integer_num;
+            } 
+        }
     } 
-    catch(string not_integer)
+    catch(const string &not_integer)
     {   
         cout << "\nInput value " << not_integer << " is not correct. Try again." << endl;
         return false;
     }
-    catch(int not_in_range)
+    catch(const int &not_in_range)
     {   
-        cout << "\nInput value " << not_in_range << " is out of range [ 1-49 ]. Try again: " << endl;
+        cout << "\nInput value " << not_in_range << " is out of range [ 1-49 ]. Try again. " << endl;
         return false;
     }
-
+    
     return true;
 }
 
 // TITLE AND PRINT MY NUMBERS
-array <int, USER_NUM> myNumbers() 
+array <int, USER_NUM> my_numbers() 
 {
     cout << "\n\n---------------------------------------------------------------------------------------------" << endl;
     cout << "Welcome in my lottery. Today you can win 1 000 000 $. Good luck." << endl;
@@ -82,36 +88,32 @@ array <int, USER_NUM> myNumbers()
 
     string insert_value;
     array <int, USER_NUM> user_array;
+    bool duplicate = {true}; 
 
     for (int i = 0; i < USER_NUM; i++)
     {   
-        while (true)
+        do
         {
             cin >> insert_value;
 
-            if (i == (USER_NUM - 1)) // condition for clear input after insert all values
-            {
-                cin.clear();
-                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            }   
+            bool correct_input = input_validation(insert_value); 
 
-            int integer_num;
-            integer_num = stoi(insert_value);
-
-            bool correct_input = input_validation(insert_value, integer_num); // check if input value is integer and in range
-            bool duplicate = is_repeated(i, integer_num, user_array); // check repeated numbers
-
-            if (!correct_input || duplicate)
+            if (!correct_input)
             {
                 continue;
             }
-            else 
+            
+            duplicate = is_repeated(i, stoi(insert_value), user_array);
+
+            if (!duplicate) 
             {
-                user_array[i] = integer_num;
-                break;  
+                user_array[i] = stoi(insert_value); 
             }  
-        }
+        } while(duplicate);
     }  
+
+    cin.clear();
+    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     
     cout << "\nYou entered the following numbers: ";
     print(user_array);
@@ -120,87 +122,73 @@ array <int, USER_NUM> myNumbers()
 }
 
 // RANDOM NUMBERS GENERATOR
-array <int, USER_NUM> numbersGenerator() 
+array <int, USER_NUM> numbers_generator() 
 {   
     random_device rd; // class is used to obtain a seed value for the random number generator
     mt19937 randomEngine(rd()); // class is a random number generation engine that produces random numbers with a uniform distribution.
     uniform_int_distribution <int> distr(MIN_NUM, MAX_NUM); // class is used to generate random integers within a given range
     array <int, USER_NUM> lottery_array;
-    bool checkNum = false;
-
-    for (int i = 0; i < USER_NUM; i++) // loop for randomizing numbers
-    {
-         do 
-        {   
+    bool checkNum = {false};
+  
+    for (int i = 0; i < USER_NUM; i++)
+    {   
+        do 
+        {    
             int number = distr(randomEngine); // function for generate random numbers
-
-            for (int j = 0; j <= i; j++) // loop to check for number repetitions
-            { 
-                if (number == lottery_array[j]) 
-                { 
-                    checkNum = true;
-                    break;
-                } 
-            }
+            checkNum = is_repeated(i, number, lottery_array);
             
-            if (!checkNum) // condition for entering the correct numbers into the array
+            if (!checkNum)
             { 
                 lottery_array[i] = number;
-            }
-        } 
+            }   
+        }   
         while (checkNum);
     }
 
     cout << "\nLottery numbers: ";
-    
-    print(lottery_array); // loop to print the entire array
 
+    print(lottery_array); // loop to print the entire array
+    
     return lottery_array;
 }
 
 // FUNCTION FOR CALCULATE POINTS
 void points(const array <int, USER_NUM> &input_array, const array <int, USER_NUM> &generated_numbers) 
 {   
-    vector <int> sameNumbers; // vector with same numbers
+    vector <int> pairs_of_numbers;
 
     for (int i = 0; i < USER_NUM; i++)  // Loop for check and add same numbers to vector
     {
-         for (int j = 0; j < USER_NUM; j++)
+        for (int j = 0; j < USER_NUM; j++)
         {
             if (input_array[i] == generated_numbers[j]) 
             {
-                sameNumbers.push_back(input_array[i]);   
+                pairs_of_numbers.push_back(input_array[i]);   
             }
         }   
     }
 
-    if (sameNumbers.empty()) // Condition for check amount of same numbers in vector 
+    switch (pairs_of_numbers.size())
     {
-        cout << "\n\nI'm sorry, you didn't get any numbers. Do you wanna try again? [Y/N]  ";
-    } 
-    else if (sameNumbers.size() == 1)
-    {
-        cout << "\n\nCongratulations, you got 1 number: " << sameNumbers.at(0) << ". Do you wanna try again? [Y/N]  ";
-    }
-    else 
-    {
-        cout << "\n\nCongratulations, you got " << sameNumbers.size() << " numbers: "; 
+        case 0: cout << "\n\nI'm sorry, you didn't get any numbers. Do you wanna try again? [Y/N]  "; break;
+        case 1: cout << "\n\nCongratulations, you got 1 number: " << pairs_of_numbers.at(0) << ". Do you wanna try again? [Y/N]  "; break;
+        default: cout << "\n\nCongratulations, you got " << pairs_of_numbers.size() << " numbers: "; 
 
-        for (const auto &e : sameNumbers)
-        {
-            std::cout << e << " ";
-        }
+            for (const auto &e : pairs_of_numbers)
+            {
+                std::cout << e << " ";
+            }
 
-        cout << ". Do you wanna try again? [Y/N]  " << endl; 
+            cout << ". Do you wanna try again? [Y/N]  "; 
     }
 }
 
 // FUNCTION FOR PLAY MORE OR QUIT GAME
-bool tryAgain(bool one_more) 
+bool try_again(bool one_more) 
 {
     while (one_more)
     {   
-        char play; // variable for "Yes or Not?"
+        char play; 
         cin >> play; 
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
@@ -213,7 +201,6 @@ bool tryAgain(bool one_more)
         {  
             cout << "\nExiting the lottery."; 
             one_more = false;
-            break;
         }
         else 
         {
@@ -228,11 +215,11 @@ int main()
 {  
     do
     {
-        array <int, USER_NUM> user_numbers = myNumbers();
-        array <int, USER_NUM> lottery_numbers = numbersGenerator();
+        array <int, USER_NUM> user_numbers = my_numbers();
+        array <int, USER_NUM> lottery_numbers = numbers_generator();
         points(user_numbers, lottery_numbers);
     }
-    while (tryAgain(true));
+    while (try_again(true));
     
     return 0;
 };
