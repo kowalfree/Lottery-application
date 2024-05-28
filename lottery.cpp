@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <unordered_set>
+#include <set>
 #include <regex>
 #include <algorithm>
 
@@ -13,7 +14,7 @@ constexpr int USER_NUM = {6};
 constexpr int MAX_NUM = {49};
 constexpr int MIN_NUM = {1};
 
-void print(const unordered_set <int> &example_set)    
+void print(const set <int> &example_set)    
 {
     for (const auto &e : example_set)
     {
@@ -57,10 +58,10 @@ bool input_validation(const string &input)
     return true;
 }
 
-unordered_set <int> my_numbers() 
+set <int> my_numbers() 
 {
     string insert_value;
-    unordered_set <int> user_set;
+    set <int> user_set;
       
     do
     {
@@ -89,12 +90,12 @@ unordered_set <int> my_numbers()
     return user_set; 
 }
 
-unordered_set <int> random_numbers()
+set <int> random_numbers()
 {
     random_device rd; // class is used to obtain a seed value for the random number generator
     mt19937 randomEngine(rd()); // class is a random number generation engine that produces random numbers with a uniform distribution.
     uniform_int_distribution <int> distr(MIN_NUM, MAX_NUM); // class is used to generate random integers within a given range
-    unordered_set <int> lottery_set;
+    set <int> lottery_set;
     
     while (lottery_set.size() < USER_NUM)
     {
@@ -105,49 +106,39 @@ unordered_set <int> random_numbers()
     return lottery_set;
 };
 
-unordered_set <int> points(const unordered_set <int> &input_set, const unordered_set <int> &generated_numbers) 
+set <int> points(const set <int> &input_set, const set <int> &generated_numbers) 
 {   
-    unordered_set <int> result;
-    
-    for (auto &e: input_set)
-    {
-        if (generated_numbers.count(e))
-        {
-            result.insert(e);
-        }
-    }; 
+    set <int> result;
+
+    set_intersection(input_set.begin(), input_set.end(), generated_numbers.begin(), generated_numbers.end(), inserter(result, result.begin())); 
 
     (result.size() != 0)? cout << "\n\nCongratulations, you got " << result.size() << " number/s:" : cout << "\n\nI'm sorry, you didn't get any numbers";
-
-    print(result);
 
     return result;
 }
 
-bool try_again(bool one_more) 
+bool try_again() 
 {
-    while (one_more)
+    char play; 
+    do
     {   
-        char play; 
         cin >> play; 
+        auto one_more = toupper(play);
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    
-        if (play == 'Y' || play == 'y') 
+
+        if (one_more != 'Y' && one_more != 'N')
         {
-            break;
+            cout << "\nWrong answer. Do you wanna try again? [Y/N] ";
         }
-        else if (play == 'N' || play == 'n') 
-        {  
-            cout << "\nExiting the lottery."; 
-            one_more = false;
-        }
-        else 
+        else if (one_more == 'N')
         {
-            cout << "\nWrong answer. Do you wanna try again? [Y/N] "; 
-        }  
-    }
-    return one_more; 
+            cout << "\nExiting the lottery."; return false;
+        }
+
+    } while (toupper(play) != 'Y' && toupper(play) != 'N');
+
+    return true; 
 }
 
 int main() 
@@ -166,11 +157,13 @@ int main()
         cout << "\nLottery numbers:";
         print(lottery_numbers);
 
-        points(user_numbers, lottery_numbers); 
+        auto same_numbers = points(user_numbers, lottery_numbers); 
+        print(same_numbers);
 
         cout << ". Do you wanna try again? [Y/N]  "; 
+
     }
-    while (try_again(true));
+    while (try_again());
     
     return 0;
 };
